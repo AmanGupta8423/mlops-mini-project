@@ -1,24 +1,249 @@
+
 <!DOCTYPE html>
+<html lang="en">
 
-<html>
-    <head>
-        <title>
-            Sentiment Analysis
-        </title>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <body>
-        <h1>
-            Sentiment Analysis
-        </h1>
-        <form action = '/predict' method="post">
-            <label>
-                Write text
-            </label><br>
-            <textarea name = 'text' rows = 10 columns = 40>
+    <title>Emotion Detection | ML App</title>
 
-            </textarea><br>
-            <input type="submit" value = 'Predict'>
-        </form>
-    </body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #141e30, #243b55);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+            color: #fff;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: #ffffff;
+            color: #222;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #243b55;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 130px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            resize: vertical;
+            font-size: 16px;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #243b55;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 18px;
+            border: none;
+            border-radius: 9px;
+            background: #243b55;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #141e30;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 22px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .happiness {
+            background: #e5f8eb;
+            border: 1px solid #8bd9a4;
+            color: #176b36;
+        }
+
+        .sadness {
+            background: #e8efff;
+            border: 1px solid #a5baf5;
+            color: #244b9b;
+        }
+
+        .unknown {
+            background: #f1f1f1;
+            color: #444;
+        }
+
+        .emoji {
+            font-size: 50px;
+            margin: 12px;
+        }
+
+        .result h2 {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .text-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f6f8;
+            border-radius: 9px;
+            text-align: left;
+            overflow-wrap: anywhere;
+        }
+
+        .text-box h3 {
+            font-size: 15px;
+            color: #243b55;
+            margin-bottom: 8px;
+        }
+
+        .text-box p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .error {
+            background: #ffe5e5;
+            color: #b00020;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 8px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 22px;
+            padding: 15px;
+            background: #f5f6f8;
+            border-radius: 9px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 22px;
+            color: #888;
+            font-size: 13px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Emotion Detection</h1>
+
+    <p class="subtitle">
+        Enter your text and let Machine Learning detect your emotion.
+    </p>
+
+    <form action="/predict" method="POST">
+
+        <textarea
+            name="text"
+            placeholder="Write something here..."
+            required>{{ original_text if original_text else '' }}</textarea>
+
+        <button type="submit">
+            Analyze Emotion
+        </button>
+
+    </form>
+
+    {% if error %}
+
+        <div class="error">
+            {{ error }}
+        </div>
+
+    {% endif %}
+
+
+    {% if sentiment %}
+
+        <div class="result {{ css_class }}">
+
+            <div class="emoji">{{ emoji }}</div>
+
+            <h2>{{ sentiment }}</h2>
+
+            <p>Predicted Emotion: {{ prediction }}</p>
+
+        </div>
+
+        <div class="text-box">
+
+            <h3>Original Text</h3>
+
+            <p>{{ original_text }}</p>
+
+        </div>
+
+        <div class="text-box">
+
+            <h3>Preprocessed Text</h3>
+
+            <p>{{ cleaned_text }}</p>
+
+        </div>
+
+    {% endif %}
+
+
+    <div class="legend">
+
+        <div>
+            <strong>0 😢</strong>
+            <p>Sadness</p>
+        </div>
+
+        <div>
+            <strong>1 😊</strong>
+            <p>Happiness</p>
+        </div>
+
+    </div>
+
+    <div class="footer">
+
+        MLflow Model Registry | Model Version: {{ model_version }}
+
+    </div>
+
+</div>
+
+</body>
 </html>
