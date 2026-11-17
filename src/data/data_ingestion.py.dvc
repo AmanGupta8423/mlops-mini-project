@@ -1,5 +1,0 @@
-outs:
-- md5: c6f992366e789cd1ada5e78b606340b8
-  size: 3425
-  hash: md5
-  path: data_ingestion.py
