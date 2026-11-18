@@ -2,11 +2,10 @@ import numpy as np
 import pandas as pd
 import pickle
 import json
-from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score,f1_score
 import logging
 import mlflow
 import mlflow.sklearn
-from mlflow.models import infer_signature
 import dagshub
 import os
 from dotenv import load_dotenv
@@ -78,12 +77,14 @@ def evaluate_model(clf, X_test: np.ndarray, y_test: np.ndarray) -> dict:
         precision = precision_score(y_test, y_pred)
         recall = recall_score(y_test, y_pred)
         auc = roc_auc_score(y_test, y_pred_proba)
+        f1 = f1_score(y_test, y_pred)
 
         metrics_dict = {
             'accuracy': accuracy,
             'precision': precision,
             'recall': recall,
-            'auc': auc
+            'auc': auc,
+            'f1':f1
         }
         logger.debug('Model evaluation metrics calculated')
         return metrics_dict
@@ -143,13 +144,7 @@ def main():
                     mlflow.log_param(param_name, param_value)
             
             # Log model to MLflow
-            signature = infer_signature(X_test, clf.predict(X_test))
-            logged_model = mlflow.sklearn.log_model(
-                clf,
-                "model",
-                signature=signature,
-                input_example=X_test[:1],
-            )
+            logged_model = mlflow.sklearn.log_model(sk_model=clf, name="model")
             
             # Save model info
             save_model_info(run_id=run.info.run_id, model_uri=logged_model.model_uri,
