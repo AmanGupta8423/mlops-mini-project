@@ -52,7 +52,7 @@ class TestModelLoading(unittest.TestCase):
         self.assertIsNotNone(signature, 'Model signature is missing')
 
         self.assertIsNotNone(signature.inputs, 'Model input signature is missing')
-        self.assertIsNotNone(signature.output, 'Model output signature is missing')
+        self.assertIsNotNone(signature.outputs, 'Model output signature is missing')
 
         input_df = self.X_holdout.head(1)
         self.assertEqual(input_df.shape[1], len(self.vectorizer.get_feature_names_out()),'Feature count does not match vectorizer')
