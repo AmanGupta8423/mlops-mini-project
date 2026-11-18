@@ -6,6 +6,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_a
 import logging
 import mlflow
 import mlflow.sklearn
+from mlflow.models import infer_signature
 import dagshub
 import os
 from dotenv import load_dotenv
@@ -142,7 +143,13 @@ def main():
                     mlflow.log_param(param_name, param_value)
             
             # Log model to MLflow
-            logged_model = mlflow.sklearn.log_model(clf, "model")
+            signature = infer_signature(X_test, clf.predict(X_test))
+            logged_model = mlflow.sklearn.log_model(
+                clf,
+                "model",
+                signature=signature,
+                input_example=X_test[:1],
+            )
             
             # Save model info
             save_model_info(run_id=run.info.run_id, model_uri=logged_model.model_uri,

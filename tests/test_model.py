@@ -28,7 +28,7 @@ class TestModelLoading(unittest.TestCase):
         mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
         cls.client = MlflowClient()
         cls.new_model_name = 'my_model2'
-        cls.model_alias = 'champion'
+        cls.model_alias = 'staging'
 
         model_version = cls.client.get_model_version_by_alias(name = cls.new_model_name, alias = cls.model_alias)
 
@@ -45,7 +45,7 @@ class TestModelLoading(unittest.TestCase):
 
     def test_model_loaded_properly(self):
         self.assertIsNotNone(self.new_model, 'Model failed to load from Mlfloew Registry')
-        self.asssertGreater(int(self.new_model_version),0,'Invalid model version')
+        self.assertGreater(int(self.new_model_version),0,'Invalid model version')
 
     def test_model_signature(self):
         signature = self.new_model.metadata.signature
@@ -55,7 +55,7 @@ class TestModelLoading(unittest.TestCase):
         self.assertIsNotNone(signature.output, 'Model output signature is missing')
 
         input_df = self.X_holdout.head(1)
-        self.assertEqual(input_df.shape[1], len(self.vectorizer.get_features_names_out()),'Feature count does not match vectorizer')
+        self.assertEqual(input_df.shape[1], len(self.vectorizer.get_feature_names_out()),'Feature count does not match vectorizer')
 
         prediction = self.new_model.predict(input_df)
 
