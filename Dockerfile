@@ -19,4 +19,4 @@ RUN python -m nltk.downloader stopwords wordnet
 
 EXPOSE 5000
 
-CMD ["gunicorn", "flask_app.app:app", "--bind", "0.0.0.0:5000"]
+CMD ["gunicorn", "flask_app.app:app", "--bind", "0.0.0.0:5000", "--workers", "1", "--timeout", "300", "--graceful-timeout", "30"]
